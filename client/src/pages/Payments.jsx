@@ -4,19 +4,26 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import LOGO from '../assets/img/dunkin-logo-large.png';
+import PaymentsTable from '../components/PaymentsTable.jsx';
+import { parseXML } from '../lib/util';
 
 const Payments = () => {
-    const [file, setFile] = useState(null);
-    const [fileConent, setFileContent] = useState([])
+    const [fileContent, setFileContent] = useState([])
 
-    const handleFileUpload = (event) => {
+    const handleFileUpload = async (event) => {
         const file = event.target.files[0]
         if (file && file.type === 'text/xml') {
-            setFile(file)
-            // process file
+            const res = await parseXML(file)
+            setFileContent(res)
         } else {
-            setFile(null)
+            // trigger toast
         }
+    }
+
+    let paymentsTable = <></>
+    if (fileContent.length) {
+        console.log(fileContent)
+        paymentsTable = <PaymentsTable payments={fileContent} />
     }
 
     return (
@@ -31,12 +38,12 @@ const Payments = () => {
             </div>
             <div className="home_row">
                 <Stack direction="row" alignItems="center" spacing={2}>
-                    {file ?
+                    {fileContent.length ?
                         <>
                             <Button variant="contained" component="label" startIcon={<CheckIcon />}>
                                 Make Payments
                             </Button>
-                            <Button variant="contained" component="label" startIcon={<ClearIcon />} onClick={() => setFile(null)}>
+                            <Button variant="contained" component="label" startIcon={<ClearIcon />} onClick={() => setFileContent([])}>
                                 Cancel
                             </Button>
                         </>
@@ -52,6 +59,9 @@ const Payments = () => {
                         </Button>
                     }
                 </Stack>
+            </div>
+            <div className="home_row">
+                {paymentsTable}
             </div>
         </Container>
     )
