@@ -50,9 +50,28 @@ export const parseXML = (file) => {
                 })
             }
     
-            resolve(fileData)
+            resolve(fileData);
         }
         reader.onerror = reject;
-        reader.readAsText(file)
+        reader.readAsText(file);
     })
+}
+
+export const getTableData = (array) => {
+    let res = [];
+    for (const el of array) {
+        const name = `${el.employee?.firstName || ''} ${el.employee?.lastName || ''}`
+
+        res.push({
+            'employee': name,
+            'employeePhone': el.employee?.phone || 'n/a',
+            'payor': el.payor?.dba || 'n/a',
+            'payorAcc': el.payor?.accNum || NaN,
+            'payorRout': el.payor?.abaRouting || NaN,
+            'payeeAcc': el.payee?.loanAccNum || NaN,
+            'amount': el.amount,
+        });
+    };
+
+    return res;
 }
