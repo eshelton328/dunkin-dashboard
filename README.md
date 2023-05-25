@@ -1,5 +1,5 @@
 # Dunkin Dashboard
-> Frontend repo for method api assessment. Backend repo can be found [here]([https://gist.github.com/teddim/e9b76cd5b4fb617afeb6dfb65796d416#file-products_api-md](https://github.com/eshelton328/dunkin-backend/tree/main))
+> Frontend repo for method api assessment. Backend repo can be found [here](https://github.com/eshelton328/dunkin-backend/tree/main))
 
 ## Tech Frameworks Used
 **Built With**
