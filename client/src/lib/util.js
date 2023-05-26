@@ -123,13 +123,10 @@ export const processNewPayments = async (fileName, payments) => {
     const total = subBatches.length;
     for (let i = 0; i < subBatches.length; i++) {
         const subBatch = subBatches[i];
-        // const res = await createPaymentBulk(fileName, subBatch, batchId, i + 1, total);
-        const testBatch = subBatch.slice(0, 10)
-        const res = await createPaymentBulk(fileName, testBatch, batchId, 1, 1);
+        const res = await createPaymentBulk(fileName, subBatch, batchId, i + 1, total);
         if (!batchId) {
             batchId = res;
         }
-        break;
     }
 
     return true;
