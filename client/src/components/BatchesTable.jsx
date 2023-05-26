@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import PaymentsHead from './PaymentsHead.jsx';
+import BatchesHead from './BatchesHead.jsx';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
@@ -8,20 +8,44 @@ import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TablePagination from '@mui/material/TablePagination';
-import { getPaymentsTableData } from '../lib/util.js';
+import DownloadIcon from '@mui/icons-material/Download';
+import FileDownloadOffIcon from '@mui/icons-material/FileDownloadOff';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import { Button } from '@mui/material'
+import { getBatchesTableData, downloadSourceReport, downloadBranchReport, downloadStatusReport } from '../lib/util.js';
+import { refreshReportsByBatch } from '../lib/routes.js';
 
-
-const PaymentsTable = ({ payments }) => {
+const BatchesTable = ({ batches }) => {
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('employee');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const rows = getPaymentsTableData(payments)
+    const rows = getBatchesTableData(batches)
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
+    const getSourceReport = (batchId) => {
+        const fileName = `${batchId}.csv`
+        downloadSourceReport(fileName)
+    }
+
+    const getBranchReport = (batchId) => {
+        const fileName = `${batchId}.csv`
+        downloadBranchReport(fileName)
+    }
+
+    const getStatusReport = (batchId) => {
+        const fileName = `${batchId}.csv`
+        downloadStatusReport(fileName)
+    }
+
+    const refreshReports = async (batchId) => {
+        let res = await refreshReportsByBatch(batchId)
+        console.log(res)
+    }
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -80,7 +104,7 @@ const PaymentsTable = ({ payments }) => {
                         aria-labelledby='tableTitle'
                         size='medium'
                     >
-                        <PaymentsHead
+                        <BatchesHead
                             order={order}
                             orderBy={orderBy}
                             onRequestSort={handleRequestSort}
@@ -91,13 +115,34 @@ const PaymentsTable = ({ payments }) => {
                                     <TableRow
                                         key={index}
                                     >
-                                        <TableCell>{row.employee}</TableCell>
-                                        <TableCell>{row.employeePhone}</TableCell>
-                                        <TableCell>{row.payor}</TableCell>
-                                        <TableCell>{row.payorAcc}</TableCell>
-                                        <TableCell>{row.payorRout}</TableCell>
-                                        <TableCell>{row.payeeAcc}</TableCell>
-                                        <TableCell>{row.amount}</TableCell>
+                                        <TableCell>{row.createdAt}</TableCell>
+                                        <TableCell>{row.fileName}</TableCell>
+                                        <TableCell>{row.batchId}</TableCell>
+                                        <TableCell>{row.status}</TableCell>
+                                        <TableCell>
+                                            {
+                                                row.sourceReport !== null ?
+                                                    <Button startIcon={<DownloadIcon />} onClick={() => getSourceReport(row.batchId)}/>
+                                                : <Button startIcon={<FileDownloadOffIcon/>} />
+                                            }
+                                        </TableCell>
+                                        <TableCell>
+                                            {
+                                                row.branchReport !== null ?
+                                                    <Button startIcon={<DownloadIcon /> } onClick={() => getBranchReport(row.batchId)}/>
+                                                : <Button startIcon={<FileDownloadOffIcon />} />
+                                            }
+                                        </TableCell>
+                                        <TableCell>
+                                            {
+                                                row.statusReport !== null ?
+                                                    <Button startIcon={<DownloadIcon />} onClick={() => getStatusReport(row.batchId)}/>
+                                                : <Button startIcon={<FileDownloadOffIcon/>} />
+                                            }
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button startIcon={<RefreshIcon />} onClick={() => refreshReports(row.batchId)}/>
+                                        </TableCell>
                                     </TableRow>
                                 )
                             })}
@@ -118,4 +163,4 @@ const PaymentsTable = ({ payments }) => {
     )
 }
 
-export default PaymentsTable;
+export default BatchesTable;

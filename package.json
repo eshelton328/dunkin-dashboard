@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.jsx",
   "scripts": {
-    "start": "cd server/ && nodemon server.js",
-    "build": "webpack --watch"
+    "start": "cd server/ && node server.js",
+    "dev": "cd server/ && nodemon server.js",
+    "build": "webpack",
+    "buildDev": "webpack --watch"
   },
   "repository": {
     "type": "git",

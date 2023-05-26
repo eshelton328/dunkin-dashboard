@@ -1,9 +1,10 @@
+import { createPaymentBulk, getSourceReport, getBranchReport, getStatusReport } from "./routes";
+
 export const parseXML = (file) => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
     
         reader.onload = async (event) => {
-            console.log('reading file')
             const contents = event.target.result;
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(contents, 'text/xml');
@@ -57,10 +58,10 @@ export const parseXML = (file) => {
     })
 }
 
-export const getTableData = (array) => {
+export const getPaymentsTableData = (array) => {
     let res = [];
     for (const el of array) {
-        const name = `${el.employee?.firstName || ''} ${el.employee?.lastName || ''}`
+        const name = `${el.employee?.firstName || ''} ${el.employee?.lastName || ''}`;
 
         res.push({
             'employee': name,
@@ -74,4 +75,62 @@ export const getTableData = (array) => {
     };
 
     return res;
+}
+
+export const getBatchesTableData = (array) => {
+    let res = [];
+    for (const el of array) {
+        res.push({
+            'createdAt': el.createdAt,
+            'fileName': el.fileName,
+            'batchId': el._id,
+            'status': el.status,
+            'sourceReport': el.reports.sourceRep,
+            'branchReport': el.reports.branchRep,
+            'statusReport': el.reports.statusRep,
+        })
+    };
+
+    return res;
+}
+
+export const downloadSourceReport = async (fileName) => {
+    let res = await getSourceReport(fileName);
+    return res
+}
+
+export const downloadBranchReport = async (fileName) => {
+    let res = await getBranchReport(fileName);
+    return res
+}
+
+export const downloadStatusReport = async (fileName) => {
+    let res = await getStatusReport(fileName)
+    return res
+}
+
+const splitArray = (array, maxLength) => {
+    const result = [];
+    for (let i = 0; i < array.length; i += maxLength) {
+        result.push(array.slice(i, i + maxLength));
+    }
+    return result;
+}
+
+export const processNewPayments = async (fileName, payments) => {
+    const subBatches = splitArray(payments, 175)
+    let batchId = false;
+    const total = subBatches.length;
+    for (let i = 0; i < subBatches.length; i++) {
+        const subBatch = subBatches[i];
+        // const res = await createPaymentBulk(fileName, subBatch, batchId, i + 1, total);
+        const testBatch = subBatch.slice(0, 10)
+        const res = await createPaymentBulk(fileName, testBatch, batchId, 1, 1);
+        if (!batchId) {
+            batchId = res;
+        }
+        break;
+    }
+
+    return true;
 }
