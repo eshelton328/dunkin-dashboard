@@ -6,50 +6,56 @@ import TableCell from '@mui/material/TableCell';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 
-const PaymentsHead = (props) => {
+const BatchesHead = (props) => {
     const { order, orderBy, onRequestSort } = props;
     const headCells = [
         {
-            id: 'employee',
+            id: 'createdAt',
             numeric: false,
             disablePadding: true,
-            label: 'Employee',
+            label: 'Created At',
         },
         {
-            id: 'employeePhone',
+            id: 'fileName',
             numeric: false,
             disablePadding: true,
-            label: 'Employee Phone',
+            label: 'Filename',
         },
         {
-            id: 'payor',
+            id: 'batchId',
             numeric: false,
             disablePadding: true,
-            label: 'Payor',
+            label: 'Batch Id',
         },
         {
-            id: 'payorAcc',
-            numeric: true,
-            disablePadding: true,
-            label: 'Payor Account',
-        },
-        {
-            id: 'payorRout',
-            numeric: true,
-            disablePadding: true,
-            label: 'Payor Routing',
-        },
-        {
-            id: 'payeeAcc',
-            numeric: true,
-            disablePadding: true,
-            label: 'Payee Account',
-        },
-        {
-            id: 'amount',
+            id: 'status',
             numeric: false,
             disablePadding: true,
-            label: 'Amount',
+            label: 'Status',
+        },
+        {
+            id: 'sourceReport',
+            numeric: false,
+            disablePadding: true,
+            label: 'Source Report',
+        },
+        {
+            id: 'branchReport',
+            numeric: false,
+            disablePadding: true,
+            label: 'Branch Report',
+        },
+        {
+            id: 'statusReport',
+            numeric: false,
+            disablePadding: true,
+            label: 'Status Report',
+        },
+        {
+            id: '',
+            numeric: false,
+            disablePadding: true,
+            label: '',
         }
 
     ];
@@ -87,4 +93,4 @@ const PaymentsHead = (props) => {
     );
 }
 
-export default PaymentsHead;
+export default BatchesHead;
